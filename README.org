@@ -1,13 +1,18 @@
 * rcirc-alert.el
   Configurable alert messages on top of [[http://www.gnu.org/software/emacs/manual/html_mono/rcirc.html][RCIRC]].
-Alerts (notifications) on top of emacs' rcirc. Five different kinds of alerts are managed. They can be configured
-and disabled in a per buffer (channel) basis.
 ** Install
-   Just update the path in your init.el or .emacs `(add-to-list 'load-path  "path/to/rcirc-alert.el")` and then `(require 'rcirc-alert)`
+   Just update the path in your init.el or .emacs
+   #+BEGIN_SRC emacs-lisp
+   (add-to-list 'load-path  "path/to/rcirc-alert.el")
+   #+END_SRC
+   and then
+   #+BEGIN_SRC emacs-lisp
+   (require 'rcirc-alert)
+   #+END_SRC
 ** Usage
    1. Autoload [[http://www.emacswiki.org/emacs/rcirc][RCIRC]] with `(autoload 'rcirc "rcirc.el" "Connect to IRC." t)`
    2. Before starting up RCIRC declare a few servers an require to rcirc-alert
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (eval-after-load "rcirc"
   '(progn
      (setq-default rcirc-server-alist '(("irc.freenode.net"
@@ -70,6 +75,7 @@ and disabled in a per buffer (channel) basis.
             (rcirc-omit-mode)
             ;; Per buffer (channel) configuration
             (cond
+
              ;; #TWITTER Channel
              ((string= (substring (buffer-name) 0 (string-match-p (regexp-quote "@") (buffer-name))) "#twitter_nick")
               (progn
@@ -90,6 +96,7 @@ and disabled in a per buffer (channel) basis.
                 (setq-local rcirc-omit-threshold' 100)
                 )
               )
+
              ;; &JABBER Channel
              ((string= rcirc-target "&jabber")
               (progn
@@ -110,7 +117,8 @@ and disabled in a per buffer (channel) basis.
                 (setq-local rcirc-omit-threshold' 100)
                 )
               )
-               ;; #EMACS Channel
+
+             ;; #EMACS Channel
              ((string= rcirc-target "#emacs")
               (progn
                 ;; Enable / disable notifications
@@ -130,6 +138,7 @@ and disabled in a per buffer (channel) basis.
                 (setq-local rcirc-omit-threshold' 100)
                 )
               )
+
              )
             )
           )
@@ -139,14 +148,10 @@ and disabled in a per buffer (channel) basis.
 *** Start
     If
 
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-
 ** Helping out
    If you want to help out, great! This is my first emacs plugin, so help is
-   much appreciated. Open an issue or check out the [[https://github.com/csantosb/rcirc-alert.el/issues][existing issues list]] for
+   much appreciated. Open an issue or check out the [[https://github.com/csantosb/rcirc-alert/issues][existing issues list]] for
    some ideas on what might need updating/fixing.
 
 ** License
-   Same as Emacs, see the file LICENSE for more info)
+   Same as Emacs

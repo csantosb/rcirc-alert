@@ -27,7 +27,7 @@
 ;; * 2013/12/01   First release. Personal (Cayetano Santos) review of the code found at
 ;;                Emacs Wiki at this date. See below for details.
 ;;
-;; This code is copy-paste of Emacs Wiki contributed original file called rcirc-notify.el
+;; This code is a review of copy-paste of Emacs Wiki contributed original file called rcirc-notify.el
 ;;
 ;; Copyright (c) 2008 Will Farrington
 ;; Copyright (c) 2009, 2011 Alex Schroeder <alex@gnu.org>
@@ -40,7 +40,7 @@
 ;;
 ;; This code integrates part of the original sources. It departs from the original in two ways
 ;;
-;; - alerts are considered as a trigger action; each trigger action executes an script file (or anything else)
+;; - alerts are considered as a trigger action; any trigger action executes one script file (or anything else)
 ;;
 ;; - five different types of alerts are considered here, three of them may be disabled
 ;;
@@ -48,13 +48,12 @@
 ;;   "keyword" - keyword detected
 ;;   "private" - private message (always enabled)
 ;;   "nick"    - given nicks changes status (join, ...)
-;;   "always"  - notify anything
+;;   "always"  - alert of any message
 ;;
-;; As long as this code only triggers an action, an example a bash script ('rcirc-alert.sh') is provided to execute
-;; the alerts. This script creates a notification or does whatever the user needs. It accepts three input
-;; arguments, being the first argument the alert type.
-;;
-;; Finally, an example configuration file shows a setup and how to use this library.
+;; As long as this code only triggers an action, an example a bash script ('rcirc-alert.sh') is necessary
+;; the alerts. This script will create a notification or whatever the user needs. It accepts four input
+;; arguments, being the first argument the alert type. Refer to the example provided script file for more details.
+;; This scripts provides an example configuration file showing a setup and how to use this library.
 ;;
 ;; Useful variables to customize alerts are described in the *Variables section of this file.
 ;;
