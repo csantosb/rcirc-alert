@@ -10,8 +10,11 @@
    (require 'rcirc-alert)
    #+END_SRC
 ** Usage
-   1. Autoload [[http://www.emacswiki.org/emacs/rcirc][RCIRC]] with `(autoload 'rcirc "rcirc.el" "Connect to IRC." t)`
-   2. Before starting up RCIRC declare a few servers an require to rcirc-alert
+   1. Autoload [[http://www.emacswiki.org/emacs/rcirc][RCIRC]] with
+   #+BEGIN_SRC emacs-lisp
+   (autoload 'rcirc "rcirc.el" "Connect to IRC." t)
+   #+END_SRC
+   2. Before starting up RCIRC declare a few servers an require rcirc-alert
    #+BEGIN_SRC emacs-lisp
 (eval-after-load "rcirc"
   '(progn
@@ -33,9 +36,9 @@
      (require 'rcirc-alert)
      )
   )
-#+END_SRC
+   #+END_SRC
    3. Declare default values per buffer (channel)
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (eval-after-load 'rcirc-alert
   '(progn
 
@@ -67,9 +70,9 @@
      (setq-default my-rcirc-notification-script "path/to/rcirc-alert.sh")
      )
   )
-#+END_SRC
+   #+END_SRC
    4. Declare custom values per buffer (channel)
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (add-hook 'rcirc-mode-hook
           (lambda ()
             (rcirc-omit-mode)
@@ -142,7 +145,7 @@
              )
             )
           )
-#+END_SRC
+   #+END_SRC
 
 ** Tips and Tricks
 *** Start

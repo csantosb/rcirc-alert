@@ -65,7 +65,6 @@
 ;; These may be used in a per-buffer basis to specify individual needs on given chats (notify anything on twitter channel, alert when
 ;; given nick appears online at #emacs, keywords on #archlinux, etc.)
 
-
 (require 'rcirc)
 
 ;;; * GROUP
