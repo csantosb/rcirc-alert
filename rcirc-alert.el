@@ -1,4 +1,4 @@
-;;; rcirc-alert.el
+;;; rcirc-alert.el -- Configurable alert messages on top of RCIRC
 
 ;; Authors: Will Farrington, Alex Schroeder, Cayetano Santos
 ;; Maintainer: Cayetano Santos
@@ -64,6 +64,11 @@
 
 ;; These may be used in a per-buffer basis to specify individual needs on given chats (notify anything on twitter channel, alert when
 ;; given nick appears online at #emacs, keywords on #archlinux, etc.)
+
+;;; TODO
+
+;;; Code
+
 
 (require 'rcirc)
 

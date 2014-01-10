@@ -1,5 +1,5 @@
 * rcirc-alert.el
-  Configurable alert messages on top of [[http://www.gnu.org/software/emacs/manual/html_mono/rcirc.html][RCIRC]].
+  Configurable alert messages on top of [[http://www.gnu.org/software/emacs/manual/html_mono/rcirc.html][RCIRC]]
 ** Install
    Just update the path in your init.el or .emacs
    #+BEGIN_SRC emacs-lisp
@@ -146,10 +146,6 @@
             )
           )
    #+END_SRC
-
-** Tips and Tricks
-*** Start
-    If
 
 ** Helping out
    If you want to help out, great! This is my first emacs plugin, so help is
