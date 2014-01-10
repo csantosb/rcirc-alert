@@ -1,4 +1,4 @@
-;;; rcirc-alert.el -- Configurable alert messages on top of RCIRC
+;;; rcirc-alert.el --- Configurable alert messages on top of RCIRC
 
 ;; Authors: Will Farrington, Alex Schroeder, Cayetano Santos
 ;; Maintainer: Cayetano Santos
