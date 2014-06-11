@@ -13,27 +13,27 @@ case $1 in
     "message")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 10, position="top_left", icon="/home/csantos/Pictures/icons/chat-icon.png", fg="#000000", bg="#17F901"})'
-	    ;;
+        T3='", timeout = 4, position="top_right", icon="/home/csantos/Pictures/icons/chat-icon.png", fg="#000000", bg="#17F901"})'
+        ;;
     "keyword")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 10, position="top_left", icon="/home/csantos/Pictures/icons/keywords.png", fg="#000000", bg="#E34CD8"})'
+        T3='", timeout = 4, position="top_right", icon="/home/csantos/Pictures/icons/keywords.png", fg="#000000", bg="#E34CD8"})'
         ;;
     "private")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 5, position="top_left", icon="/home/csantos/Pictures/icons/private.png", fg="#000000", bg="#22BFCF"})'
+        T3='", timeout = 4, position="top_right", icon="/home/csantos/Pictures/icons/private.png", fg="#000000", bg="#22BFCF"})'
         ;;
     "nick")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 5, position="top_left", icon="/home/csantos/Pictures/icons/chat-icon.png", fg="#000000", bg="#E34CD8"})'
+        T3='", timeout = 4, position="top_right", icon="/home/csantos/Pictures/icons/chat-icon.png", fg="#000000", bg="#E34CD8"})'
         ;;
     "always")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 10, position="top_left", icon="/home/csantos/Pictures/icons/private.png", fg="#000000", bg="#22BFCF"})'
+        T3='", timeout = 7, font="Verdana 8", position="top_right", icon="/home/csantos/Pictures/icons/private.png", fg="#000000", bg="#22BFCF"})'
         ;;
     *)
         ;;
@@ -41,4 +41,3 @@ esac
 
 printf -v texto '%s %-15s %-15s %-15s %-15s %-15s\n' "$T1" $2 "    @ " $4 "$T2" $3 "$T3"
 echo $texto | awesome-client
-
