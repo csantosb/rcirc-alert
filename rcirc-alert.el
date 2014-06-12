@@ -190,8 +190,45 @@ as is the case of twitter messages through bitlbee."
                        (if fin
                            (substring str-chain (+ inicio fin) nil)
                          "" )))))
-  (message str-chain) ;; return value
-  )
+  (eval str-chain))
+
+(defun asciify-text (ξstring &optional ξfrom ξto)
+  "Change some Unicode characters into equivalent ASCII ones. For example,
+“passé” becomes “passe”.
+This function works on chars in European languages, and does not transcode
+arbitrary Unicode chars (such as Greek, math symbols).
+Untransformed unicode char remains in the string.  When called interactively,
+work on text selection or current block.  When called in LISP code, if ξfrom
+is nil, returns a changed string, else, change text in the region between
+positions ξfrom ξto.
+By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
+  (interactive
+   (if (region-active-p)
+       (list nil (region-beginning) (region-end))
+     (let ((bds (bounds-of-thing-at-point 'paragraph)) )
+       (list nil (car bds) (cdr bds)) ) ) )
+  (require 'xfrp_find_replace_pairs)
+  (let (workOnStringP
+        inputStr
+        (charChangeMap [
+                        ["á\\|à\\|â\\|ä\\|ã\\|å" "a"]
+                        ["é\\|è\\|ê\\|ë" "e"]
+                        ["í\\|ì\\|î\\|ï" "i"]
+                        ["ó\\|ò\\|ô\\|ö\\|õ\\|ø" "o"]
+                        ["ú\\|ù\\|û\\|ü"     "u"]
+                        ["Ý\\|ý\\|ÿ"     "y"]
+                        ["ñ" "n"]
+                        ["ç" "c"]
+                        ["ð" "d"]
+                        ["þ" "th"]
+                        ["ß" "ss"]
+                        ["æ" "ae"]
+                        ]))
+    (setq workOnStringP (if ξfrom nil t))
+    (setq inputStr (if workOnStringP ξstring (buffer-substring-no-properties ξfrom ξto)))
+    (if workOnStringP
+        (let ((case-fold-search t)) (replace-regexp-pairs-in-string inputStr charChangeMap) )
+      (let ((case-fold-search t)) (replace-regexp-pairs-region ξfrom ξto charChangeMap) )) ) )
 
 (defun my-page-me-notify (type title msg)
   "If notification script is in path, run it for this TYPE of notification."
@@ -203,10 +240,11 @@ as is the case of twitter messages through bitlbee."
           (setq msg (RemovePattern "http" msg)) ;; filter-out links from message
           (setq msg (RemovePattern "<" msg))    ;; filter-out pics from message
           (setq msg (RemovePattern "\\[" msg))  ;; filter-out meta from message
-          (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)
-          )
-      )
-    )
+          ;; convert message to ascii to avoid problems with naughty.notify
+          (start-process "page-me" nil my-rcirc-notification-script type title (asciify-text msg) rcirc-target)
+          ;; echo message
+          (message (concat "Nuevo message : " (asciify-text msg)) )
+          )))
    (t (error "No method available to page you."))))
 
 ;;; * Notificators
