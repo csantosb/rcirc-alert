@@ -241,9 +241,12 @@ By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
           (setq msg (RemovePattern "<" msg))    ;; filter-out pics from message
           (setq msg (RemovePattern "\\[" msg))  ;; filter-out meta from message
           ;; convert message to ascii to avoid problems with naughty.notify
-          (start-process "page-me" nil my-rcirc-notification-script type title (asciify-text msg) rcirc-target)
+          (setq msg (asciify-text msg))
+          ;; remove any quotes from msg
+          (setq msg (replace-regexp-in-string "\"" "'" msg))
+          (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)
           ;; echo message
-          (message (concat "Nuevo message : " (asciify-text msg)) )
+          (message (concat "Nuevo message : " msg) )
           )))
    (t (error "No method available to page you."))))
 
