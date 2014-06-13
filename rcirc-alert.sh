@@ -33,7 +33,7 @@ case $1 in
     "always")
         T1='naughty.notify({title = "'
         T2='", text = "'
-        T3='", timeout = 15, position="top_right", icon="/home/csantos/Pictures/icons/twitter.jpg", fg="#000000", bg="#22BFCF"})'
+        T3='", timeout = 15, position="top_right", icon="/home/csantos/Pictures/icons/twitter.jpg", fg="#000000", bg="#00FFFF"})'
         ;;
     *)
         ;;

@@ -3,7 +3,7 @@
 ;; Authors: Will Farrington, Alex Schroeder, Cayetano Santos
 ;; Maintainer: Cayetano Santos
 ;; Created: First December 2013
-;; Version: 0.2
+;; Version: 0.1
 ;; Keywords: lisp, rcirc, irc, alert, awesome
 
 ;; This file is NOT part of GNU Emacs.
@@ -23,8 +23,6 @@
 ;; MA 02111-1307 USA
 ;;
 ;; Changelog:
-;;
-;; * 2014/06/11   Included 'RemovePattern' as a way to cleanup messages, removing known, systematic patterns
 ;;
 ;; * 2013/12/01   First release. Personal (Cayetano Santos) review of the code found at
 ;;                Emacs Wiki at this date. See below for details.
@@ -69,7 +67,7 @@
 
 ;;; TODO
 
-;;; Code:
+;;; Code
 
 
 (require 'rcirc)
@@ -155,22 +153,24 @@ This script manages all types of notifications internally following its first ar
 ;;; ** Lists of alert triggers
 
 (defcustom rcirc-alert-nicks nil
-  "List of nicks whose new status triggers a notification of type 'nick'."
+  "List of nicks whose new status triggers a notification of type 'nick'"
   :type '(repeat string)
   :group 'rcirc-alert)
 
 (defcustom rcirc-alert-keywords nil
-  "List of keywords that trigger a notification of type 'keyword'."
+  "List of keywords that trigger a notification of type 'keyword'"
   :type '(repeat string)
   :group 'rcirc-alert)
 
 ;;; **
 
 (defvar rcirc-alert-nick-alist nil
-  "An alist of nicks and the last time they tried to trigger a notification.")
+  "An alist of nicks and the last time they tried to trigger a
+notification.")
 
 (defcustom rcirc-alert-timeout 60
-  "Number of seconds that will elapse between notifications from the same person."
+  "Number of seconds that will elapse between notifications from the
+same person."
   :type 'integer
   :group 'rcirc-alert)
 
@@ -193,14 +193,12 @@ as is the case of twitter messages through bitlbee."
   (eval str-chain))
 
 (defun asciify-text (ξstring &optional ξfrom ξto)
-  "Change some Unicode characters into equivalent ASCII ones. For example,
-“passé” becomes “passe”.
-This function works on chars in European languages, and does not transcode
-arbitrary Unicode chars (such as Greek, math symbols).
-Untransformed unicode char remains in the string.  When called interactively,
-work on text selection or current block.  When called in LISP code, if ξfrom
-is nil, returns a changed string, else, change text in the region between
-positions ξfrom ξto.
+"Change some Unicode characters into equivalent ASCII ones. For example, “passé” becomes “passe”.
+This function works on chars in European languages, and does not transcode arbitrary Unicode chars
+(such as Greek, math symbols).
+Un-transformed unicode char remains in the string. When called interactively, work on text selection or current block.
+When called in lisp code, if ξfrom is nil, returns a changed string, else, change text in the region
+between positions ξfrom ξto.
 By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
   (interactive
    (if (region-active-p)
@@ -234,25 +232,9 @@ By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
   "If notification script is in path, run it for this TYPE of notification."
   (cond
    ((executable-find my-rcirc-notification-script)
-    ;; (start-process "page-me" nil my-rcirc-notification-script type title msg (substring (buffer-name) 0 (string-match-p (regexp-quote "@") (buffer-name))))
     (if rcirc-target
-        (progn
-
-          (message " " )
-          (message (concat "Nuevo message : " msg) )
-          (setq msg (RemovePattern "\\[" msg))                                       ;; filter-out meta from message
-          ;; (setq msg (replace-regexp-in-string "\\[\\(.*\\)\\] " "" msg))          ;; filter-out meta from message
-          ;; (setq msg (replace-regexp-in-string "\\[.*\\] " "" msg))                ;; filter-out meta from message
-          (setq msg (replace-regexp-in-string " ?http://t.co/[-A-Za-z0-9]+" "" msg)) ;; filter-out links
-          (setq msg (replace-regexp-in-string " ?<\\(.*\\)>" "" msg))                ;; filter-out pics
-          (setq msg (asciify-text msg))                                              ;; convert message to ascii to avoid problems with naughty.notify
-          (setq msg (replace-regexp-in-string "\"" "'" msg))                         ;; convert double quotes
-          (setq msg (replace-regexp-in-string "¿" "" msg))                           ;; remove any spanish question mark
-          (message (concat "Fixed message : " msg) )                                 ;; echo fixed message
-          (message " " )
-
-          (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target) ;; process
-          )))
+        ;; process
+        (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)))
    (t (error "No method available to page you."))))
 
 ;;; * Notificators
@@ -290,9 +272,21 @@ By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
 (defun my-rcirc-alert-always (sender &optional text)
   (when window-system
     ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/"))
-      (my-page-me-notify "always" "rcIRC " (format rcirc-alert-message-always (upcase sender) text)))))
-
+    (let ((default-directory "~/")
+          (msg (format rcirc-alert-message-always (upcase sender) text)))
+      (message " " )
+      (message (concat "Nuevo message : " msg) )
+      (setq msg (RemovePattern "\\[" msg))                                       ;; filter-out meta from message
+      ;; (setq msg (replace-regexp-in-string "\\[\\(.*\\)\\] " "" msg))          ;; filter-out meta from message
+      ;; (setq msg (replace-regexp-in-string "\\[.*\\] " "" msg))                ;; filter-out meta from message
+      (setq msg (replace-regexp-in-string " ?http.*://t.co/[-A-Za-z0-9]+" "" msg)) ;; filter-out links
+      (setq msg (replace-regexp-in-string " ?<\\(.*\\)>" "" msg))                ;; filter-out pics
+      (setq msg (asciify-text msg))                                              ;; convert message to ascii to avoid problems with naughty.notify
+      (setq msg (replace-regexp-in-string "\"" "'" msg))                         ;; convert double quotes
+      (setq msg (replace-regexp-in-string "¿" "" msg))                           ;; remove any spanish question mark
+      (message (concat "Fixed message : " msg) )                                 ;; echo fixed message
+      (message " " )
+      (my-page-me-notify "always" "rcIRC " msg))))
 
 ;;; * Allowed Senders
 ;; Comment
@@ -319,7 +313,8 @@ that can occur between two notifications.  The default is
 
 ;;; ** notifications 1 and 2 : message and keyword
 (defun rcirc-alert-message (proc sender response target text)
-  "Notify the current user when someone sends a message that matches the current nick or keywords."
+  "Notify the current user when someone sends a message that
+matches the current nick or keywords."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
              (not (string= (rcirc-server-name proc) sender)))
