@@ -237,16 +237,21 @@ By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
     ;; (start-process "page-me" nil my-rcirc-notification-script type title msg (substring (buffer-name) 0 (string-match-p (regexp-quote "@") (buffer-name))))
     (if rcirc-target
         (progn
-          (setq msg (RemovePattern "http" msg)) ;; filter-out links from message
-          (setq msg (RemovePattern "<" msg))    ;; filter-out pics from message
-          (setq msg (RemovePattern "\\[" msg))  ;; filter-out meta from message
-          ;; convert message to ascii to avoid problems with naughty.notify
-          (setq msg (asciify-text msg))
-          ;; remove any quotes from msg
-          (setq msg (replace-regexp-in-string "\"" "'" msg))
-          (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)
-          ;; echo message
+
+          (message " " )
           (message (concat "Nuevo message : " msg) )
+          (setq msg (RemovePattern "\\[" msg))                                       ;; filter-out meta from message
+          ;; (setq msg (replace-regexp-in-string "\\[\\(.*\\)\\] " "" msg))          ;; filter-out meta from message
+          ;; (setq msg (replace-regexp-in-string "\\[.*\\] " "" msg))                ;; filter-out meta from message
+          (setq msg (replace-regexp-in-string " ?http://t.co/[-A-Za-z0-9]+" "" msg)) ;; filter-out links
+          (setq msg (replace-regexp-in-string " ?<\\(.*\\)>" "" msg))                ;; filter-out pics
+          (setq msg (asciify-text msg))                                              ;; convert message to ascii to avoid problems with naughty.notify
+          (setq msg (replace-regexp-in-string "\"" "'" msg))                         ;; convert double quotes
+          (setq msg (replace-regexp-in-string "¿" "" msg))                           ;; remove any spanish question mark
+          (message (concat "Fixed message : " msg) )                                 ;; echo fixed message
+          (message " " )
+
+          (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target) ;; process
           )))
    (t (error "No method available to page you."))))
 
