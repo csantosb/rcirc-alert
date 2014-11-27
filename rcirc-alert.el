@@ -67,10 +67,11 @@
 
 ;;; TODO
 
-;;; Code
+;;; Code:
 
 
 (require 'rcirc)
+(require 'xfrp_find_replace_pairs)
 
 ;;; * GROUP
 
@@ -153,24 +154,22 @@ This script manages all types of notifications internally following its first ar
 ;;; ** Lists of alert triggers
 
 (defcustom rcirc-alert-nicks nil
-  "List of nicks whose new status triggers a notification of type 'nick'"
+  "List of nicks whose new status triggers a notification of type 'nick'."
   :type '(repeat string)
   :group 'rcirc-alert)
 
 (defcustom rcirc-alert-keywords nil
-  "List of keywords that trigger a notification of type 'keyword'"
+  "List of keywords that trigger a notification of type 'keyword'."
   :type '(repeat string)
   :group 'rcirc-alert)
 
 ;;; **
 
 (defvar rcirc-alert-nick-alist nil
-  "An alist of nicks and the last time they tried to trigger a
-notification.")
+  "An alist of nicks and the last time they tried to trigger a notification.")
 
 (defcustom rcirc-alert-timeout 60
-  "Number of seconds that will elapse between notifications from the
-same person."
+  "Number of seconds that will elapse between notifications from the same person."
   :type 'integer
   :group 'rcirc-alert)
 
@@ -183,13 +182,13 @@ same person."
 This is useful when message content is poluted with links, pics and the like,
 as is the case of twitter messages through bitlbee."
   (while (string-match-p my-pattern str-chain)
-    (let* ((inicio (string-match-p my-pattern str-chain))
-           (fin (string-match-p " " (substring str-chain inicio nil))))
-      (setq str-chain (concat
-                       (substring str-chain 0 (- inicio (if (< inicio 2) 0 1)))
-                       (if fin
-                           (substring str-chain (+ inicio fin) nil)
-                         "" )))))
+	(let* ((inicio (string-match-p my-pattern str-chain))
+		   (fin (string-match-p " " (substring str-chain inicio nil))))
+	  (setq str-chain (concat
+					   (substring str-chain 0 (- inicio (if (< inicio 2) 0 1)))
+					   (if fin
+						   (substring str-chain (+ inicio fin) nil)
+						 "" )))))
   (eval str-chain))
 
 (defun asciify-text (ξstring &optional ξfrom ξto)
@@ -202,39 +201,38 @@ between positions ξfrom ξto.
 By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
   (interactive
    (if (region-active-p)
-       (list nil (region-beginning) (region-end))
-     (let ((bds (bounds-of-thing-at-point 'paragraph)) )
-       (list nil (car bds) (cdr bds)) ) ) )
-  (require 'xfrp_find_replace_pairs)
+	   (list nil (region-beginning) (region-end))
+	 (let ((bds (bounds-of-thing-at-point 'paragraph)) )
+	   (list nil (car bds) (cdr bds)) ) ) )
   (let (workOnStringP
-        inputStr
-        (charChangeMap [
-                        ["á\\|à\\|â\\|ä\\|ã\\|å" "a"]
-                        ["é\\|è\\|ê\\|ë" "e"]
-                        ["í\\|ì\\|î\\|ï" "i"]
-                        ["ó\\|ò\\|ô\\|ö\\|õ\\|ø" "o"]
-                        ["ú\\|ù\\|û\\|ü"     "u"]
-                        ["Ý\\|ý\\|ÿ"     "y"]
-                        ["ñ" "n"]
-                        ["ç" "c"]
-                        ["ð" "d"]
-                        ["þ" "th"]
-                        ["ß" "ss"]
-                        ["æ" "ae"]
-                        ]))
-    (setq workOnStringP (if ξfrom nil t))
-    (setq inputStr (if workOnStringP ξstring (buffer-substring-no-properties ξfrom ξto)))
-    (if workOnStringP
-        (let ((case-fold-search t)) (replace-regexp-pairs-in-string inputStr charChangeMap) )
-      (let ((case-fold-search t)) (replace-regexp-pairs-region ξfrom ξto charChangeMap) )) ) )
+		inputStr
+		(charChangeMap [
+						["á\\|à\\|â\\|ä\\|ã\\|å" "a"]
+						["é\\|è\\|ê\\|ë" "e"]
+						["í\\|ì\\|î\\|ï" "i"]
+						["ó\\|ò\\|ô\\|ö\\|õ\\|ø" "o"]
+						["ú\\|ù\\|û\\|ü"     "u"]
+						["Ý\\|ý\\|ÿ"     "y"]
+						["ñ" "n"]
+						["ç" "c"]
+						["ð" "d"]
+						["þ" "th"]
+						["ß" "ss"]
+						["æ" "ae"]
+						]))
+	(setq workOnStringP (if ξfrom nil t))
+	(setq inputStr (if workOnStringP ξstring (buffer-substring-no-properties ξfrom ξto)))
+	(if workOnStringP
+		(let ((case-fold-search t)) (replace-regexp-pairs-in-string inputStr charChangeMap) )
+	  (let ((case-fold-search t)) (replace-regexp-pairs-region ξfrom ξto charChangeMap) )) ) )
 
 (defun my-page-me-notify (type title msg)
   "If notification script is in path, run it for this TYPE of notification."
   (cond
    ((executable-find my-rcirc-notification-script)
-    (if rcirc-target
-        ;; process
-        (start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)))
+	(if rcirc-target
+		;; process
+		(start-process "page-me" nil my-rcirc-notification-script type title msg rcirc-target)))
    (t (error "No method available to page you."))))
 
 ;;; * Notificators
@@ -242,51 +240,51 @@ By Xah Lee http://ergoemacs.org/emacs/emacs_zap_gremlins.html"
 
 (defun my-rcirc-alert-message (sender &optional text)
   (when window-system
-    ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/"))
-      (my-page-me-notify "message" "rcIRC Message" (format rcirc-alert-message-message (upcase sender) text)))))
+	;; Set default dir to appease the notification gods
+	(let ((default-directory "~/"))
+	  (my-page-me-notify "message" "rcIRC Message" (format rcirc-alert-message-message (upcase sender) text)))))
 
 (defun my-rcirc-alert-keyword (sender &optional keyword text)
   (when window-system
-    ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/"))
-      (if (listp keyword)
-          (setq keyword (mapconcat 'identity keyword ", ")))
-      (my-page-me-notify "keyword" "rcIRC KeyWord" (format rcirc-alert-message-keyword (upcase sender) (upcase keyword) text)))))
+	;; Set default dir to appease the notification gods
+	(let ((default-directory "~/"))
+	  (if (listp keyword)
+		  (setq keyword (mapconcat 'identity keyword ", ")))
+	  (my-page-me-notify "keyword" "rcIRC KeyWord" (format rcirc-alert-message-keyword (upcase sender) (upcase keyword) text)))))
 
 (defun my-rcirc-alert-private (sender &optional text)
   (when window-system
-    ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/"))
-      (my-page-me-notify "private" "rcIRC Private Message" (format rcirc-alert-message-private (upcase sender) text)))))
+	;; Set default dir to appease the notification gods
+	(let ((default-directory "~/"))
+	  (my-page-me-notify "private" "rcIRC Private Message" (format rcirc-alert-message-private (upcase sender) text)))))
 
 (defun my-rcirc-alert-nick (sender &optional keyword)
   (when window-system
-    ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/"))
-      (if (listp keyword)
-          (setq keyword (mapconcat 'identity keyword ", "))
-        )
-      (my-page-me-notify "nick" "rcIRC New Nick Status" (format rcirc-alert-message-nick (upcase sender) keyword)))))
+	;; Set default dir to appease the notification gods
+	(let ((default-directory "~/"))
+	  (if (listp keyword)
+		  (setq keyword (mapconcat 'identity keyword ", "))
+		)
+	  (my-page-me-notify "nick" "rcIRC New Nick Status" (format rcirc-alert-message-nick (upcase sender) keyword)))))
 
 (defun my-rcirc-alert-always (sender &optional text)
   (when window-system
-    ;; Set default dir to appease the notification gods
-    (let ((default-directory "~/")
-          (msg (format rcirc-alert-message-always (upcase sender) text)))
-      (message " " )
-      (message (concat "Nuevo message : " msg) )
-      (setq msg (RemovePattern "\\[" msg))                                       ;; filter-out meta from message
-      ;; (setq msg (replace-regexp-in-string "\\[\\(.*\\)\\] " "" msg))          ;; filter-out meta from message
-      ;; (setq msg (replace-regexp-in-string "\\[.*\\] " "" msg))                ;; filter-out meta from message
-      (setq msg (replace-regexp-in-string " ?http.*://t.co/[-A-Za-z0-9]+" "" msg)) ;; filter-out links
-      (setq msg (replace-regexp-in-string " ?<\\(.*\\)>" "" msg))                ;; filter-out pics
-      (setq msg (asciify-text msg))                                              ;; convert message to ascii to avoid problems with naughty.notify
-      (setq msg (replace-regexp-in-string "\"" "'" msg))                         ;; convert double quotes
-      (setq msg (replace-regexp-in-string "¿" "" msg))                           ;; remove any spanish question mark
-      (message (concat "Fixed message : " msg) )                                 ;; echo fixed message
-      (message " " )
-      (my-page-me-notify "always" "rcIRC " msg))))
+	;; Set default dir to appease the notification gods
+	(let ((default-directory "~/")
+		  (msg (format rcirc-alert-message-always (upcase sender) text)))
+	  (message " " )
+	  (message (concat "Nuevo message : " msg) )
+	  (setq msg (RemovePattern "\\[" msg))                                       ;; filter-out meta from message
+	  ;; (setq msg (replace-regexp-in-string "\\[\\(.*\\)\\] " "" msg))          ;; filter-out meta from message
+	  ;; (setq msg (replace-regexp-in-string "\\[.*\\] " "" msg))                ;; filter-out meta from message
+	  (setq msg (replace-regexp-in-string " ?http.*://t.co/[-A-Za-z0-9]+" "" msg)) ;; filter-out links
+	  (setq msg (replace-regexp-in-string " ?<\\(.*\\)>" "" msg))                ;; filter-out pics
+	  (setq msg (asciify-text msg))                                              ;; convert message to ascii to avoid problems with naughty.notify
+	  (setq msg (replace-regexp-in-string "\"" "'" msg))                         ;; convert double quotes
+	  (setq msg (replace-regexp-in-string "¿" "" msg))                           ;; remove any spanish question mark
+	  (message (concat "Fixed message : " msg) )                                 ;; echo fixed message
+	  (message " " )
+	  (my-page-me-notify "always" "rcIRC " msg))))
 
 ;;; * Allowed Senders
 ;; Comment
@@ -298,15 +296,15 @@ that can occur between two notifications.  The default is
 `rcirc-alert-timeout'."
   (unless delay (setq delay rcirc-alert-timeout))
   (let ((cur-time (float-time (current-time)))
-        (cur-assoc (assoc nick rcirc-alert-nick-alist))
-        (last-time))
-    (if cur-assoc
-        (progn
-          (setq last-time (cdr cur-assoc))
-          (setcdr cur-assoc cur-time)
-          (> (abs (- cur-time last-time)) delay))
-      (push (cons nick cur-time) rcirc-alert-nick-alist)
-      t)))
+		(cur-assoc (assoc nick rcirc-alert-nick-alist))
+		(last-time))
+	(if cur-assoc
+		(progn
+		  (setq last-time (cdr cur-assoc))
+		  (setcdr cur-assoc cur-time)
+		  (> (abs (- cur-time last-time)) delay))
+	  (push (cons nick cur-time) rcirc-alert-nick-alist)
+	  t)))
 
 
 ;;; * Criteria to trigger notifications
@@ -317,31 +315,31 @@ that can occur between two notifications.  The default is
 matches the current nick or keywords."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
-             (not (string= (rcirc-server-name proc) sender)))
-    (cond
-     ;; Cond 1 :
-     (
-      (and (string-match (concat "\\b" (rcirc-nick proc) "\\b") text)
-           (my-rcirc-alert-allowed sender))
-      (my-rcirc-alert-message sender text)
-      )
-     ;; Cond 1
-     ;; Cond 2 : keyword
-     (rcirc-enable-alert-keywords
-      (let (keywords)
-        (dolist (key rcirc-alert-keywords keywords)
-          (when (string-match (concat "\\<" key "\\>")
-                              text)
-            (push key keywords)))
-        (when keywords
-          (if (my-rcirc-alert-allowed sender)
-              (my-rcirc-alert-keyword sender keywords text))
-          )
-        )
-      )
-     ;; Cond 2
-     ) ;; cond
-    ) ;; when
+			 (not (string= (rcirc-server-name proc) sender)))
+	(cond
+	 ;; Cond 1 :
+	 (
+	  (and (string-match (concat "\\b" (rcirc-nick proc) "\\b") text)
+		   (my-rcirc-alert-allowed sender))
+	  (my-rcirc-alert-message sender text)
+	  )
+	 ;; Cond 1
+	 ;; Cond 2 : keyword
+	 (rcirc-enable-alert-keywords
+	  (let (keywords)
+		(dolist (key rcirc-alert-keywords keywords)
+		  (when (string-match (concat "\\<" key "\\>")
+							  text)
+			(push key keywords)))
+		(when keywords
+		  (if (my-rcirc-alert-allowed sender)
+			  (my-rcirc-alert-keyword sender keywords text))
+		  )
+		)
+	  )
+	 ;; Cond 2
+	 ) ;; cond
+	) ;; when
   )
 
 ;;; ** notification 3 (private message)
@@ -350,66 +348,66 @@ matches the current nick or keywords."
 to him."
   (interactive)
   (when (and (string= response "PRIVMSG")
-             (not (string= sender (rcirc-nick proc)))
-             (not (rcirc-channel-p target))
-             (my-rcirc-alert-allowed sender))
-    (my-rcirc-alert-private sender text)
-    ))
+			 (not (string= sender (rcirc-nick proc)))
+			 (not (rcirc-channel-p target))
+			 (my-rcirc-alert-allowed sender))
+	(my-rcirc-alert-private sender text)
+	))
 
 ;;; ** notification 4 (new nick status)
 (defun rcirc-alert-nick (proc sender response target text)
   "Notify the current a nick in the list changes status."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
-             (not (string= (rcirc-server-name proc) sender))
-             ;;not nil sender
-             (not (string= nil sender))
-             )
-    (cond
-     ;; Cond
-     (rcirc-enable-alert-nick
-      ;; use the member function
-      (let (keywords)
-        (dolist (key rcirc-alert-nicks keywords)
-          (when
-              (and
-               ;; when the sender is in the list rcirc-alert-nicks
-               ;; (string-match (concat "\\<" key "\\>") sender)
-               (string-match key sender)
-               ;; when it changes to these states
-               (member response '("QUIT" "PART" "JOIN" "AWAY"))
-               )
-            (progn
-              (push key keywords)
-              ;; (message response)
-              )
-            ;; (push key keywords)
-            )
-          ) ;; dolist
-        (when keywords
-          (if (my-rcirc-alert-allowed sender)
-              (my-rcirc-alert-nick sender response))
-          )
-        )
-      )
-     ;; Cond
-     ) ;; cond
-    ) ;; when
+			 (not (string= (rcirc-server-name proc) sender))
+			 ;;not nil sender
+			 (not (string= nil sender))
+			 )
+	(cond
+	 ;; Cond
+	 (rcirc-enable-alert-nick
+	  ;; use the member function
+	  (let (keywords)
+		(dolist (key rcirc-alert-nicks keywords)
+		  (when
+			  (and
+			   ;; when the sender is in the list rcirc-alert-nicks
+			   ;; (string-match (concat "\\<" key "\\>") sender)
+			   (string-match key sender)
+			   ;; when it changes to these states
+			   (member response '("QUIT" "PART" "JOIN" "AWAY"))
+			   )
+			(progn
+			  (push key keywords)
+			  ;; (message response)
+			  )
+			;; (push key keywords)
+			)
+		  ) ;; dolist
+		(when keywords
+		  (if (my-rcirc-alert-allowed sender)
+			  (my-rcirc-alert-nick sender response))
+		  )
+		)
+	  )
+	 ;; Cond
+	 ) ;; cond
+	) ;; when
   )
 
 ;;; ** notification 5 : notificate always
 (defun rcirc-alert-always (proc sender response target text)
   "
-    ."
+	."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
-             (not (string= (rcirc-server-name proc) sender)))
-    (cond
-     (rcirc-enable-alert-always
-      (my-rcirc-alert-always sender text)
-      ) ;; cond
-     ) ;; cond
-    ) ;; when
+			 (not (string= (rcirc-server-name proc) sender)))
+	(cond
+	 (rcirc-enable-alert-always
+	  (my-rcirc-alert-always sender text)
+	  ) ;; cond
+	 ) ;; cond
+	) ;; when
   )
 
 
